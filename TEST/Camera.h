@@ -39,19 +39,19 @@ public:
 		float velocity = MovementSpeed * deltaTime;
 		if (direction==FORWARD)
 		{
-			Position += Front * velocity;
+			Position += Front * (velocity*3);
 		}
 		if (direction==BACKWARD)
 		{
-			Position -= Front * velocity;
+			Position -= Front * (velocity*3);
 		}
 		if (direction==LEFT)
 		{
-			Position -= Right * velocity;
+			Position -= Right * (velocity*3);
 		}
 		if (direction==RIGHT)
 		{
-			Position += Right * velocity;
+			Position += Right * (velocity*3);
 		}
 	}
 	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constarinPitch = true) {
