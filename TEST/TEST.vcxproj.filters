@@ -67,6 +67,12 @@
     <None Include="lightFSrc.shader" />
     <None Include="1.model_loading.vs" />
     <None Include="1.model_loading.fs" />
+    <None Include="Pbr_fragment.shader" />
+    <None Include="PBr_vertex.shader" />
+    <None Include="FrameBuffer_vr.shader" />
+    <None Include="FrameBuffer_frag.shader" />
+    <None Include="5.1.framebuffersV.shader" />
+    <None Include="5.1.framebuffersF.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">

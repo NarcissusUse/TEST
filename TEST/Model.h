@@ -1,5 +1,6 @@
 #pragma once
 #include"Mesh.h"
+#define STBI_WINDOWS_UTF8
 #include "stb_image.h"
 class Model
 {

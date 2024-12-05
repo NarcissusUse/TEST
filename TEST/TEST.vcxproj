@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\Graphics\LearnOpenGL\libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Graphics\LearnOpenGL\libraries\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\Graphics\LearnOpenGL\libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\Graphics\LearnOpenGL\libraries\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -113,7 +113,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\Graphics\LearnOpenGL\libraries\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Graphics\LearnOpenGL\libraries\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -148,10 +148,16 @@
   <ItemGroup>
     <None Include="1.model_loading.fs" />
     <None Include="1.model_loading.vs" />
+    <None Include="5.1.framebuffersF.shader" />
+    <None Include="5.1.framebuffersV.shader" />
     <None Include="Basic.shader" />
     <None Include="fragmentSrc.shader" />
+    <None Include="FrameBuffer_frag.shader" />
+    <None Include="FrameBuffer_vr.shader" />
     <None Include="lightFSrc.shader" />
     <None Include="lightVSrc.shader" />
+    <None Include="Pbr_fragment.shader" />
+    <None Include="PBr_vertex.shader" />
     <None Include="vertexSrc.shader" />
   </ItemGroup>
   <ItemGroup>

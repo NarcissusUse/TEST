@@ -1,4 +1,11 @@
 #version 330 core
+float near = 0.1; 
+float far  = 100.0; 
+float LinearizeDepth(float depth) 
+{
+    float z = depth * 2.0 - 1.0; // back to NDC 
+    return (2.0 * near * far) / (far + near - z * (far - near));    
+}
 struct Material{
 	sampler2D texture_diffuse1;
 	sampler2D texture_specular1;
@@ -60,16 +67,17 @@ void main()
 	vec3 viewDir=normalize(vec3(-FragPos));
 
 	//direction light
-	vec3 result=CalcDirLight(dirLight,norm,viewDir);
+	//vec3 result=CalcDirLight(dirLight,norm,viewDir);
 	
 	//position Light
-	for(int i=0;i<NR_POINT_LIGHTS;i++){
-		result+=CalcPointLight(pointLights[i],norm,FragPos,viewDir);
-	}
+	//for(int i=0;i<NR_POINT_LIGHTS;i++){
+	//	result+=CalcPointLight(pointLights[i],norm,FragPos,viewDir);
+	//}
 	
 	//spot Light
 	//result+=CalcSpotLight(spotLight,norm,FragPos,viewDir);
-	FragColor=vec4(result,1.0);
+	float depth = LinearizeDepth(gl_FragCoord.z) / far;
+	FragColor=vec4(vec3(depth),1.0);
 
 
 }
