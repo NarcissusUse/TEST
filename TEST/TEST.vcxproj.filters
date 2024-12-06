@@ -73,6 +73,13 @@
     <None Include="FrameBuffer_frag.shader" />
     <None Include="5.1.framebuffersV.shader" />
     <None Include="5.1.framebuffersF.shader" />
+    <None Include="cubemapV.shader" />
+    <None Include="cubemapF.shader" />
+    <None Include="redFrag.shader" />
+    <None Include="greenFrag.shader" />
+    <None Include="blueFrag.shader" />
+    <None Include="yellowFrag.shader" />
+    <None Include="8advanced_glsl.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">

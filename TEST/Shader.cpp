@@ -20,6 +20,7 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& shaderS
         glGetShaderInfoLog(id, length, &length, message);
         std::cout << "Shader compilation failed\n";
         std::cout << "Shader type: " << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment") << "\n";
+        std::cout << shaderSource << std::endl;
     }
 
     return id;

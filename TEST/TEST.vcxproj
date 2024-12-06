@@ -150,15 +150,22 @@
     <None Include="1.model_loading.vs" />
     <None Include="5.1.framebuffersF.shader" />
     <None Include="5.1.framebuffersV.shader" />
+    <None Include="8advanced_glsl.shader" />
     <None Include="Basic.shader" />
+    <None Include="blueFrag.shader" />
+    <None Include="cubemapF.shader" />
+    <None Include="cubemapV.shader" />
     <None Include="fragmentSrc.shader" />
     <None Include="FrameBuffer_frag.shader" />
     <None Include="FrameBuffer_vr.shader" />
+    <None Include="greenFrag.shader" />
     <None Include="lightFSrc.shader" />
     <None Include="lightVSrc.shader" />
     <None Include="Pbr_fragment.shader" />
     <None Include="PBr_vertex.shader" />
+    <None Include="redFrag.shader" />
     <None Include="vertexSrc.shader" />
+    <None Include="yellowFrag.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
