@@ -13,6 +13,7 @@ public:
 
     // 构造函数和析构函数声明
     Shader(const std::string& vertexPath, const std::string& fragmentPath);
+    Shader(const std::string& vertexPath, const std::string& GeometryPath, const std::string& fragmentPath);
     ~Shader();
 
     // 成员函数声明

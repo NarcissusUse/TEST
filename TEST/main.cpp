@@ -89,6 +89,7 @@ int main()
     Shader blueShader("8advanced_glsl.shader", "blueFrag.shader");
     Shader yellowShader("8advanced_glsl.shader", "yellowFrag.shader");
     Shader greenShader("8advanced_glsl.shader", "greenFrag.shader");
+    Shader gsShader("gsV.shader", "geometry.shader", "gsF.shader");
     vector<std::string> faces{
         "asset/skybox/right.jpg",
         "asset/skybox/left.jpg",
@@ -97,6 +98,7 @@ int main()
         "asset/skybox/front.jpg",
         "asset/skybox/back.jpg"
     };
+    Model nanosuit("asset\\nanosuit\\nanosuit.obj");
     float skyboxVertices[] = {
         // positions          
         -1.0f,  1.0f, -1.0f,
@@ -206,6 +208,20 @@ int main()
          1.0f, -1.0f,  1.0f, 0.0f,
          1.0f,  1.0f,  1.0f, 1.0f
     };
+    float points[] = {
+    -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // 左上
+     0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // 右上
+     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // 右下
+    -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // 左下
+    };
+
+    VertexArray VAOpoints;
+    VAOpoints.Bind();
+    VertexBuffer VBOpoints(points, sizeof(points));
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(2*sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     VertexArray VAOsky;
     VAOsky.Bind();
@@ -322,90 +338,97 @@ int main()
 
         // render
         // ------
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glEnable(GL_DEPTH_TEST);    
+        // 
+        // 
+        //glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        //glEnable(GL_DEPTH_TEST);    
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //write in the databuffer which alreadly binding binding index
+        ////write in the databuffer which alreadly binding binding index
         glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        //glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+        //glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+        //glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glm::mat4 view = camera.GetViewMatrix();
-        glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-        glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        //glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+        //glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+        //glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        ourShader.use();
+        //ourShader.use();
         glm::mat4 model = glm::mat4(1.0f);
-        VAOcube.Bind();
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP,cubemapTexture);
-        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-        ourShader.setMat4("model", model);
-        ourShader.setMat4("view", view);
-        ourShader.setMat4("projection", projection);
-        ourShader.setVec3("cameraPos", camera.Position);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(2.0f, 0.0f, -1.0f));
-        ourShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        //VAOcube.Bind();
+        //glActiveTexture(GL_TEXTURE0);
+        //glBindTexture(GL_TEXTURE_CUBE_MAP,cubemapTexture);
+        //model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+        //ourShader.setMat4("model", model);
+        //ourShader.setMat4("view", view);
+        //ourShader.setMat4("projection", projection);
+        //ourShader.setVec3("cameraPos", camera.Position);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        //model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(2.0f, 0.0f, -1.0f));
+        //ourShader.setMat4("model", model);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        //write four cubes
-        VAOcubePosition.Bind();
-        redShader.use();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));  // 移动到左上角
-        redShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        ////write four cubes
+        //VAOcubePosition.Bind();
+        //redShader.use();
+        //model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));  // 移动到左上角
+        //redShader.setMat4("model", model);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        greenShader.use();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));  // 移动到右上角
-        greenShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        //greenShader.use();
+        //model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f));  // 移动到右上角
+        //greenShader.setMat4("model", model);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        blueShader.use();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f));  // 移动到左下角
-        blueShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        //blueShader.use();
+        //model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f));  // 移动到左下角
+        //blueShader.setMat4("model", model);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
 
-        yellowShader.use();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f));  // 移动到右下角
-        yellowShader.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        
-        //draw skybox
-        glDepthFunc(GL_LEQUAL);
-        skyboxShader.use();
-        view = glm::mat4(glm::mat3(view));
-        skyboxShader.setMat4("view", view);
-        skyboxShader.setMat4("projection", projection);
-        VAOsky.Bind();
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glDepthFunc(GL_LESS);
+        //yellowShader.use();
+        //model = glm::mat4(1.0f);
+        //model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f));  // 移动到右下角
+        //yellowShader.setMat4("model", model);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        //
+        ////draw skybox
+        //glDepthFunc(GL_LEQUAL);
+        //skyboxShader.use();
+        //view = glm::mat4(glm::mat3(view));
+        //skyboxShader.setMat4("view", view);
+        //skyboxShader.setMat4("projection", projection);
+        //VAOsky.Bind();
+        //glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        //glDrawArrays(GL_TRIANGLES, 0, 36);
+        //glDepthFunc(GL_LESS);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST);
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
-        glClear(GL_COLOR_BUFFER_BIT);
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glDisable(GL_DEPTH_TEST);
+        //glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+        //glClear(GL_COLOR_BUFFER_BIT);
 
        
 
 
-        screenShader.use();
-        VAOQuad.Bind();
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-        //set texture sampler in fragment
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        // don't forget to enable shader before setting uniforms
-        
+        //screenShader.use();
+        //VAOQuad.Bind();
+        //glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+        ////set texture sampler in fragment
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
+        gsShader.use();
+        gsShader.setMat4("projection", projection);
+        gsShader.setMat4("view", view);
+        gsShader.setMat4("model", model);
+
+        gsShader.setFloat("time", static_cast<float>(glfwGetTime()));
+        nanosuit.Draw(gsShader);
 
         
 

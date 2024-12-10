@@ -52,6 +52,37 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) {
     glDeleteShader(fs);
 }
 
+Shader::Shader(const std::string& vertexPath, const std::string& GeometryPath, const std::string& fragmentPath)
+{
+    std::string vertexCode, geometryCode,fragmentCode;
+    std::ifstream vsFile(vertexPath), gsFile(GeometryPath),fsFile(fragmentPath);
+    std::stringstream vstream,gstream, fstream;
+
+    vstream << vsFile.rdbuf();
+    gstream << gsFile.rdbuf();
+    fstream << fsFile.rdbuf();
+    vertexCode = vstream.str();
+    geometryCode = gstream.str();
+    fragmentCode = fstream.str();
+
+    unsigned int program = glCreateProgram();
+    unsigned int vs = compileShader(GL_VERTEX_SHADER, vertexCode);
+    unsigned int gs = compileShader(GL_GEOMETRY_SHADER, geometryCode);
+    unsigned int fs = compileShader(GL_FRAGMENT_SHADER, fragmentCode);
+
+    glAttachShader(program, vs);
+    glAttachShader(program, gs);
+    glAttachShader(program, fs);
+    glLinkProgram(program);
+
+    ID = program;
+
+    // 删除着色器对象
+    glDeleteShader(vs);
+    glDeleteShader(gs);
+    glDeleteShader(fs);
+}
+
 // 析构函数实现
 Shader::~Shader() {
     glDeleteProgram(ID);
