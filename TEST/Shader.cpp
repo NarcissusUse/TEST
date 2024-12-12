@@ -123,6 +123,11 @@ void Shader::setMat3(const std::string& name, glm::mat3 mat3) const
     glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1,GL_TRUE, glm::value_ptr(mat3));
 }
 
+void Shader::setVec2(const std::string& name, glm::vec2 vec2) const
+{
+    glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1,glm::value_ptr(vec2));
+}
+
 void Shader::Unbind() const
 {
     glUseProgram(0);

@@ -7,7 +7,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include<map>
-
+#include<sstream>
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -70,7 +70,7 @@ int main()
     }
 
     // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load(true);
 
     // configure global opengl state
     // -----------------------------
@@ -82,14 +82,15 @@ int main()
         glm::vec3(-3.0f, -3.0f,  3.0f)
     };*/
     // ------------------------------------------------------------------
-    Shader ourShader("5.1.framebuffersV.shader", "5.1.framebuffersF.shader");
-    Shader screenShader("FrameBuffer_vr.shader", "FrameBuffer_frag.shader");
-    Shader skyboxShader("cubemapV.shader", "cubemapF.shader");
-    Shader redShader("8advanced_glsl.shader", "redFrag.shader");
-    Shader blueShader("8advanced_glsl.shader", "blueFrag.shader");
-    Shader yellowShader("8advanced_glsl.shader", "yellowFrag.shader");
-    Shader greenShader("8advanced_glsl.shader", "greenFrag.shader");
-    Shader gsShader("gsV.shader", "geometry.shader", "gsF.shader");
+    //Shader ourShader("5.1.framebuffersV.shader", "5.1.framebuffersF.shader");
+    //Shader screenShader("FrameBuffer_vr.shader", "FrameBuffer_frag.shader");
+    //Shader skyboxShader("cubemapV.shader", "cubemapF.shader");
+    //Shader redShader("8advanced_glsl.shader", "redFrag.shader");
+    //Shader blueShader("8advanced_glsl.shader", "blueFrag.shader");
+    //Shader yellowShader("8advanced_glsl.shader", "yellowFrag.shader");
+    //Shader greenShader("8advanced_glsl.shader", "greenFrag.shader");
+    //Shader gsShader("gsV.shader", "geometry.shader", "gsF.shader");
+    Shader shader("9.4.instanceV.shader", "9.4.instanceF.shader");
     vector<std::string> faces{
         "asset/skybox/right.jpg",
         "asset/skybox/left.jpg",
@@ -198,23 +199,34 @@ int main()
         -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
          5.0f, -0.5f, -5.0f,  2.0f, 2.0f
     };
-    float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-        // positions   // texCoords
-        -1.0f,  1.0f,  0.0f, 1.0f,
-        -1.0f, -1.0f,  0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-
-        -1.0f,  1.0f,  0.0f, 1.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f, 1.0f
-    };
     float points[] = {
     -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // 左上
      0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // 右上
      0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // 右下
     -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // 左下
     };
+    float quadVertices[] = {
+        // 位置          // 颜色
+        -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+         0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+        -0.05f, -0.05f,  0.0f, 0.0f, 1.0f,
 
+        -0.05f,  0.05f,  1.0f, 0.0f, 0.0f,
+         0.05f, -0.05f,  0.0f, 1.0f, 0.0f,
+         0.05f,  0.05f,  0.0f, 1.0f, 1.0f
+    };
+    glm::vec2 translations[100];
+    int index = 0;
+    float offset = 0.1f;
+    for (int y = -10; y < 10; y+=2)
+    {
+        for (int x = -10; x < 10;  x += 2) {
+            glm::vec2 translation;
+            translation.x = (float)x / 10.0f + offset;
+            translation.y = (float)y / 10.0f + offset;
+            translations[index++] = translation;
+        }
+    }
     VertexArray VAOpoints;
     VAOpoints.Bind();
     VertexBuffer VBOpoints(points, sizeof(points));
@@ -254,23 +266,29 @@ int main()
     VertexArray VAOQuad;
     VAOQuad.Bind();
     VertexBuffer VBOQuad(quadVertices, sizeof(quadVertices));
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void*)(2 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
+    VertexBuffer VBOinstance(&translations[0],sizeof(glm::vec2)*100);
+    VBOinstance.Bind();
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(2);
+    VBOinstance.Unbind();
+    glVertexAttribDivisor(2, 1);
+    glBindVertexArray(0);
     unsigned int cubeTexture = loadTexture("container.jpg");
     unsigned int floorTexture = loadTexture("metal.png");
     unsigned int cubemapTexture = loadCubemap(faces);
 
     // build and compile shaders
-    // -------------------------
-    ourShader.use();
-    ourShader.setInt("skybox", 0);
-    screenShader.use();
-    screenShader.setInt("screenTexture", 0);
-    skyboxShader.use();
-    skyboxShader.setInt("skybox", 0);
+    //// -------------------------
+    //ourShader.use();
+    //ourShader.setInt("skybox", 0);
+    //screenShader.use();
+    //screenShader.setInt("screenTexture", 0);
+    //skyboxShader.use();
+    //skyboxShader.setInt("skybox", 0);
 
     unsigned int fbo;
     glGenFramebuffers(1, &fbo);
@@ -292,26 +310,26 @@ int main()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     //setting uniform block
-    //bind all unifrom block in shader to binding index
-    unsigned int uniformBlockIndexGreen = glGetUniformBlockIndex(greenShader.ID, "Matrices");
-    unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(redShader.ID, "Matrices");
-    unsigned int uniformBlockIndexYellow = glGetUniformBlockIndex(yellowShader.ID, "Matrices");
-    unsigned int uniformBlockIndexBlue = glGetUniformBlockIndex(blueShader.ID, "Matrices");
-    unsigned int uniformBlockIndexOurShader = glGetUniformBlockIndex(ourShader.ID, "Matrices");
+    ////bind all unifrom block in shader to binding index
+    //unsigned int uniformBlockIndexGreen = glGetUniformBlockIndex(greenShader.ID, "Matrices");
+    //unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(redShader.ID, "Matrices");
+    //unsigned int uniformBlockIndexYellow = glGetUniformBlockIndex(yellowShader.ID, "Matrices");
+    //unsigned int uniformBlockIndexBlue = glGetUniformBlockIndex(blueShader.ID, "Matrices");
+    //unsigned int uniformBlockIndexOurShader = glGetUniformBlockIndex(ourShader.ID, "Matrices");
 
-    glUniformBlockBinding(greenShader.ID, uniformBlockIndexGreen, 0);
-    glUniformBlockBinding(redShader.ID, uniformBlockIndexRed, 0);
-    glUniformBlockBinding(yellowShader.ID, uniformBlockIndexYellow, 0);
-    glUniformBlockBinding(blueShader.ID, uniformBlockIndexBlue, 0);
-    glUniformBlockBinding(ourShader.ID, uniformBlockIndexOurShader, 0);
+    //glUniformBlockBinding(greenShader.ID, uniformBlockIndexGreen, 0);
+    //glUniformBlockBinding(redShader.ID, uniformBlockIndexRed, 0);
+    //glUniformBlockBinding(yellowShader.ID, uniformBlockIndexYellow, 0);
+    //glUniformBlockBinding(blueShader.ID, uniformBlockIndexBlue, 0);
+    //glUniformBlockBinding(ourShader.ID, uniformBlockIndexOurShader, 0);
     //create a buffer and bind this buffer to binding index
-    unsigned int uboMatrices;
-    glGenBuffers(1, &uboMatrices);
-    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
-    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-    glBindBuffer(GL_UNIFORM_BUFFER,0);
-    //bind this databuffer to binding index
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
+    //unsigned int uboMatrices;
+    //glGenBuffers(1, &uboMatrices);
+    //glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    //glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    //glBindBuffer(GL_UNIFORM_BUFFER,0);
+    ////bind this databuffer to binding index
+    //glBindBufferBase(GL_UNIFORM_BUFFER, 0, uboMatrices);
 
 
     
@@ -346,18 +364,18 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         ////write in the databuffer which alreadly binding binding index
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        /*glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);*/
         //glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
         //glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
         //glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-        glm::mat4 view = camera.GetViewMatrix();
+        //glm::mat4 view = camera.GetViewMatrix();
         //glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
         //glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
         //glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         //ourShader.use();
-        glm::mat4 model = glm::mat4(1.0f);
+        //glm::mat4 model = glm::mat4(1.0f);
         //VAOcube.Bind();
         //glActiveTexture(GL_TEXTURE0);
         //glBindTexture(GL_TEXTURE_CUBE_MAP,cubemapTexture);
@@ -422,13 +440,9 @@ int main()
         //glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
         ////set texture sampler in fragment
         //glDrawArrays(GL_TRIANGLES, 0, 6);
-        gsShader.use();
-        gsShader.setMat4("projection", projection);
-        gsShader.setMat4("view", view);
-        gsShader.setMat4("model", model);
-
-        gsShader.setFloat("time", static_cast<float>(glfwGetTime()));
-        nanosuit.Draw(gsShader);
+        shader.use();
+        VAOQuad.Bind();
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 100);
 
         
 

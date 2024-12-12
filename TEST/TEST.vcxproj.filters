@@ -83,6 +83,13 @@
     <None Include="geometry.shader" />
     <None Include="gsF.shader" />
     <None Include="gsV.shader" />
+    <None Include="9.3.default.vs" />
+    <None Include="9.3.default.fs" />
+    <None Include="9.3.normal_visualization.vs" />
+    <None Include="9.3.normal_visualization.fs" />
+    <None Include="9.3.normal_visualization.gs" />
+    <None Include="9.4.instanceF.shader" />
+    <None Include="9.4.instanceV.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.h">

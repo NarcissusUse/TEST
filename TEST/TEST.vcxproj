@@ -151,6 +151,13 @@
     <None Include="5.1.framebuffersF.shader" />
     <None Include="5.1.framebuffersV.shader" />
     <None Include="8advanced_glsl.shader" />
+    <None Include="9.3.default.fs" />
+    <None Include="9.3.default.vs" />
+    <None Include="9.3.normal_visualization.fs" />
+    <None Include="9.3.normal_visualization.gs" />
+    <None Include="9.3.normal_visualization.vs" />
+    <None Include="9.4.instanceF.shader" />
+    <None Include="9.4.instanceV.shader" />
     <None Include="Basic.shader" />
     <None Include="blueFrag.shader" />
     <None Include="cubemapF.shader" />

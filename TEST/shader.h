@@ -25,6 +25,7 @@ public:
     void setVec3(const std::string& name, glm::vec3 vec3) const;
     void setVec3(const std::string& name, float x, float y, float z) const;
     void setMat3(const std::string& name, glm::mat3 mat3) const;
+    void setVec2(const std::string& name, glm::vec2 vec2)const;
     void Unbind()const;
 
 private:
